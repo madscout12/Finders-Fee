@@ -1,3 +1,4 @@
 venv
 .idea
 data
+/tests/test_data/test2.json
