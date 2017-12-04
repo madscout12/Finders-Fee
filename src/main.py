@@ -1,6 +1,7 @@
 import argparse
 import json
 from collections import defaultdict
+import os
 
 
 def open_json_read(args):
@@ -37,13 +38,23 @@ def iterable_json(file_path):
             return data
 
 
-def sort_data(data):
-    pass
+def organize_data(data, path):
+    if not isinstance(data, dict) or not isinstance(path, str):
+        raise ValueError('Expected dict, str got: {}, {}'.format(type(data), type(path)))
+    organize_file_structure(data, path)
+
+
+def organize_file_structure(data, path):
+    for key in data.keys():
+        if not os.path.exists(path + "/" + key):
+            os.makedirs(path + "/" + key)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('path', nargs=1, type=str, help='path to filename')
     parser.add_argument('match', nargs=1, type=str, help='json fields to match')
+    parser.add_argument('--out', nargs=1, type=str, help="path for head directory for output")
     args = vars(parser.parse_args())
     data = open_json_read(args)
+    organize_data(data, args["--out"][0])
