@@ -6,10 +6,8 @@ sys.path.append("../src")
 
 from main import open_json_read
 
-args = {"path": ["test_data/test.json"], "match": [""]}
 
-
-class TestOpenJsonRead(unittest.TestCase):
+class TestInvalidFile(unittest.TestCase):
 
     def test_invalid_file(self):
         args = {"path": ["test.json"], "match": [""]}
@@ -20,20 +18,37 @@ class TestOpenJsonRead(unittest.TestCase):
         data = open_json_read(args)
         self.assertTrue(data == defaultdict(list))
 
+
+class TestInvalidMatch(unittest.TestCase):
+
     def test_invalid_match(self):
         args = {"path": ["test_data/test.json"], "match": ["not_a_field"]}
         data = open_json_read(args)
         self.assertTrue(data == defaultdict(list))
 
+
+class TestCorrctSort(unittest.TestCase):
+
     def test_correct_sort(self):
         args = {"path": ["test_data/test.json"], "match": ["gender"]}
         data = open_json_read(args)
         self.assertEqual(2, len(data.keys()))
+        for key in data.keys():
+            self.assertIsInstance(data[key], list)
+            self.assertFalse(data[key] is [])
+            self.assertIsInstance(data[key][0], dict)
+
+
+class TestCorrctSort2(unittest.TestCase):
 
     def test_correct_sort2(self):
-        args = {"path": ["test_data/test2.json"], "match": ["org"]}
+        args = {"path": ["test_data/test2.json"], "match": ["gender"]}
         data = open_json_read(args)
-        self.assertNotEqual(0, len(data.keys()))
+        self.assertEqual(2, len(data.keys()))
+        for key in data.keys():
+            self.assertIsInstance(data[key], list)
+            self.assertFalse(data[key] is [])
+            self.assertIsInstance(data[key][0], dict)
 
 
 if __name__ == "__main__":

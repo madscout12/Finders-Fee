@@ -1,7 +1,6 @@
 import argparse
 import json
 from collections import defaultdict
-import os
 
 
 def open_json_read(args):
@@ -11,11 +10,9 @@ def open_json_read(args):
     i = 0
     data = defaultdict(list)
     try:
-        with open(path) as file:
-            file = json.load(file)
-            for record in file:
-                test = record[match]
-                data[record[match]].append(record)
+        file = iterable_json(path)
+        for record in file:
+            data[record[match]].append(record)
     except FileNotFoundError as error:
         print("Error while loading {}: {}".format(path, error))
     except json.decoder.JSONDecodeError as error:
@@ -24,6 +21,20 @@ def open_json_read(args):
         print("Error: {} is not a field".format(match))
 
     return data
+
+
+def iterable_json(file_path):
+    with open(file_path) as file:
+        try:
+            data = json.load(file)
+            if isinstance(data, list):
+                return data
+        except json.decoder.JSONDecodeError:
+            data = []
+            with open(file_path) as file:
+                for line in file:
+                    data.append(json.loads(line))
+            return data
 
 
 def sort_data(data):
