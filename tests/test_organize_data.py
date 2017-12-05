@@ -5,7 +5,7 @@ import shutil
 
 sys.path.append("../src")
 
-from main import organize_data, make_directory, write_json
+from main import organize_data
 
 
 class TestFileStructure(unittest.TestCase):
@@ -49,6 +49,14 @@ class TestFileStructure(unittest.TestCase):
     def test_no_data(self):
         data = {}
         organize_data(data, self.path)
+
+    def test_integer_data(self):
+        self.data = {1: "data", 1: "data"}
+        organize_data(self.data, self.path)
+        self.assertTrue(os.path.exists(self.path))
+        for key in self.data.keys():
+            self.assertTrue(os.path.exists("{0}/{1}/{1}.json".format(self.path, key)))
+        shutil.rmtree(self.path, ignore_errors=True)
 
 
 if __name__ == "__main__":

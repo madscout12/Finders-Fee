@@ -41,20 +41,29 @@ def iterable_json(file_path):
 def organize_data(data, path):
     if not isinstance(data, dict) or not isinstance(path, str):
         raise ValueError('Expected dict, str got: {}, {}'.format(type(data), type(path)))
-    organize_file_structure(data, path)
-
-
-def organize_file_structure(data, path):
     for key in data.keys():
-        if not os.path.exists(path + "/" + key):
-            os.makedirs(path + "/" + key)
+        dir_path = path + "/" + str(key)
+        make_directory(dir_path)
+        write_json(dir_path + "/{}.json".format(key), data[key])
+
+
+def write_json(path, json_data):
+    file = open(path, 'w')
+    file.write(json.dumps(json_data))
+    file.close()
+
+
+def make_directory(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('path', nargs=1, type=str, help='path to filename')
     parser.add_argument('match', nargs=1, type=str, help='json fields to match')
-    parser.add_argument('--out', nargs=1, type=str, help="path for head directory for output")
+    parser.add_argument('--out', nargs=1, type=str, default="ff_out",
+                        help="path for head directory for output. defaults to home directory")
     args = vars(parser.parse_args())
     data = open_json_read(args)
-    organize_data(data, args["--out"][0])
+    organize_data(data, args["out"][0])
