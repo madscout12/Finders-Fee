@@ -25,6 +25,29 @@ class TestInvalidFile(unittest.TestCase):
         except json.decoder.JSONDecodeError as e:
             pass
 
+class TestInvalidMultipleFile(unittest.TestCase):
+
+    def test_invalid_multiple_file(self):
+
+        try:
+            kwargs = {"path": ["test_data/test2.json", "test.json"], "match": ["gender"]}
+            data = open_json_read(**kwargs)
+            self.assertTrue(data == defaultdict(list))
+        except FileNotFoundError as e:
+            pass
+
+class TestMultipleFiles(unittest.TestCase):
+    def test_mulitple_files(self):
+        kwargs = {"path": ["test_data/test.json", "test_data/test2.json"], "match": ["gender"]}
+        data = open_json_read(**kwargs)
+        self.assertEqual(2, len(data.keys()))
+        for key in data.keys():
+            self.assertEqual(4, len(data[key]))
+            self.assertIsInstance(data[key], list)
+            self.assertFalse(data[key] is [])
+            self.assertIsInstance(data[key][0], dict)
+
+
 
 class TestInvalidMatch(unittest.TestCase):
 
@@ -42,6 +65,7 @@ class TestCorrctSort(unittest.TestCase):
         data = open_json_read(**kwargs)
         self.assertEqual(2, len(data.keys()))
         for key in data.keys():
+            self.assertEqual(2, len(data[key]))
             self.assertIsInstance(data[key], list)
             self.assertFalse(data[key] is [])
             self.assertIsInstance(data[key][0], dict)
@@ -54,6 +78,7 @@ class TestCorrctSort2(unittest.TestCase):
         data = open_json_read(**kwargs)
         self.assertEqual(2, len(data.keys()))
         for key in data.keys():
+            self.assertEqual(2, len(data[key]))
             self.assertIsInstance(data[key], list)
             self.assertFalse(data[key] is [])
             self.assertIsInstance(data[key][0], dict)
