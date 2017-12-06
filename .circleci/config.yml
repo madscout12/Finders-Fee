@@ -34,6 +34,3 @@ jobs:
             cd tests
             python3 -m unittest discover
 
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports

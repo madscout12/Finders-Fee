@@ -4,47 +4,37 @@ from collections import defaultdict
 import os
 
 
-def open_json_read(args):
-    path = args["path"][0]
-    match = args["match"][0]
-
-    i = 0
-    data = defaultdict(list)
+def open_json_read(path, match):
     try:
-        file = iterable_json(path)
-        for record in file:
-            data[record[match]].append(record)
-    except FileNotFoundError as error:
-        print("Error while loading {}: {}".format(path, error))
-    except json.decoder.JSONDecodeError as error:
-        print("Error: Not a valid JSON file {}".format(error))
-    except KeyError as error:
-        print("Error: {} is not a field".format(match))
+        return open_valid_json(*path, *match)
+    except json.decoder.JSONDecodeError:
+        return open_line_valid_json(*path, *match)
 
+
+def open_valid_json(file_path, match):
+    data = defaultdict(list)
+    with open(file_path) as file:
+        for json_data in json.load(file):
+            key = json_data[match]
+            data[key].append(json_data)
     return data
 
 
-def iterable_json(file_path):
+def open_line_valid_json(file_path, match):
+    data = defaultdict(list)
     with open(file_path) as file:
-        try:
-            data = json.load(file)
-            if isinstance(data, list):
-                return data
-        except json.decoder.JSONDecodeError:
-            data = []
-            with open(file_path) as file:
-                for line in file:
-                    data.append(json.loads(line))
-            return data
+        for line in file.readlines():
+            json_data = json.loads(line)
+            key = json_data[match]
+            data[key].append(json_data)
+    return data
 
 
-def organize_data(data, path):
-    if not isinstance(data, dict) or not isinstance(path, str):
-        raise ValueError('Expected dict, str got: {}, {}'.format(type(data), type(path)))
-    for key in data.keys():
+def organize_data(json_data, path):
+    for key in json_data.keys():
         dir_path = path + "/" + str(key)
         make_directory(dir_path)
-        write_json(dir_path + "/{}.json".format(key), data[key])
+        write_json(dir_path + "/{}.json".format(key), json_data[key])
 
 
 def write_json(path, json_data):
@@ -64,6 +54,6 @@ if __name__ == "__main__":
     parser.add_argument('match', nargs=1, type=str, help='json fields to match')
     parser.add_argument('--out', nargs=1, type=str, default="ff_out",
                         help="path for head directory for output. defaults to home directory")
-    args = vars(parser.parse_args())
-    data = open_json_read(args)
-    organize_data(data, args["out"][0])
+    kwargs = vars(parser.parse_args())
+    data = open_json_read(**kwargs)
+    organize_data(data, **kwargs)
