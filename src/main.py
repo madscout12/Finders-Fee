@@ -5,14 +5,20 @@ import os
 
 
 def open_json_read(path, match):
-    try:
-        return open_valid_json(*path, *match)
-    except json.decoder.JSONDecodeError:
-        return open_line_valid_json(*path, *match)
-
-
-def open_valid_json(file_path, match):
     data = defaultdict(list)
+    for file in path:
+        data = open_correct_type(file, *match, data)
+    return data
+
+
+def open_correct_type(path, match, data):
+    try:
+        return open_line_valid_json(path, match, data)
+    except json.decoder.JSONDecodeError:
+        return open_valid_json(path, match, data)
+
+
+def open_valid_json(file_path, match, data):
     with open(file_path) as file:
         for json_data in json.load(file):
             key = json_data[match]
@@ -20,8 +26,7 @@ def open_valid_json(file_path, match):
     return data
 
 
-def open_line_valid_json(file_path, match):
-    data = defaultdict(list)
+def open_line_valid_json(file_path, match, data):
     with open(file_path) as file:
         for line in file.readlines():
             json_data = json.loads(line)
@@ -50,7 +55,7 @@ def make_directory(path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('path', nargs=1, type=str, help='path to filename')
+    parser.add_argument('path', nargs='+', type=str, help='path to filename')
     parser.add_argument('match', nargs=1, type=str, help='json fields to match')
     parser.add_argument('--out', nargs=1, type=str, default="ff_out",
                         help="path for head directory for output. defaults to home directory")
