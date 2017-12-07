@@ -47,6 +47,16 @@ class TestMultipleFiles(unittest.TestCase):
             self.assertFalse(data[key] is [])
             self.assertIsInstance(data[key][0], dict)
 
+class TestMultipleMatch(unittest.TestCase):
+    def test_mulitple_files(self):
+        kwargs = {"path": ["test_data/test.json", "test_data/test2.json"], "match": ["gender", 'id']}
+        data = open_json_read(**kwargs)
+        self.assertEqual(4, len(data.keys()))
+        for key in data.keys():
+            self.assertEqual(2, len(data[key]))
+            self.assertIsInstance(data[key], list)
+            self.assertFalse(data[key] is [])
+            self.assertIsInstance(data[key][0], dict)
 
 
 class TestInvalidMatch(unittest.TestCase):
