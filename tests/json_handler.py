@@ -1,45 +1,56 @@
 import sys
 import unittest
 from collections import defaultdict
-import json
 
 sys.path.append("../src")
 
-from main import open_json_read
+from modules.json_handler import JSONHandler
 
 
 class TestInvalidFile(unittest.TestCase):
 
     def test_invalid_file(self):
-        try:
-            kwargs = {"path": ["test.json"], "match": [""]}
-            data = open_json_read(**kwargs)
-            self.assertTrue(data == defaultdict(list))
-        except FileNotFoundError as e:
-            pass
+        path = ['test.json']
+        match = [""]
+        handler = JSONHandler(path)
 
         try:
-            kwargs = {"path": ["test_data/false_data.txt"], "match": [""]}
-            data = open_json_read(**kwargs)
+            data = handler.get_data(match)
             self.assertTrue(data == defaultdict(list))
-        except json.decoder.JSONDecodeError as e:
-            pass
+        except IOError as e:
+            self.assertEqual("[Errno 2] No such file or directory: 'test.json'", str(e))
+
+        try:
+            handler.set_paths(["test_data/false_data.txt"])
+            data = handler.get_data(match)
+            self.assertTrue(data == defaultdict(list))
+        except ValueError as e:
+            self.assertEqual("No JSON object could be decoded", str(e))
+
 
 class TestInvalidMultipleFile(unittest.TestCase):
 
     def test_invalid_multiple_file(self):
 
         try:
-            kwargs = {"path": ["test_data/test2.json", "test.json"], "match": ["gender"]}
-            data = open_json_read(**kwargs)
+            paths = ["test_data/test2.json", "test.json"]
+            match = ["gender"]
+            handler = JSONHandler(paths)
+
+            data = handler.get_data(match)
             self.assertTrue(data == defaultdict(list))
-        except FileNotFoundError as e:
-            pass
+        except IOError as e:
+            self.assertEqual("[Errno 2] No such file or directory: 'test.json'", str(e))
+
 
 class TestMultipleFiles(unittest.TestCase):
     def test_mulitple_files(self):
-        kwargs = {"path": ["test_data/test.json", "test_data/test2.json"], "match": ["gender"]}
-        data = open_json_read(**kwargs)
+        paths = ["test_data/test.json", "test_data/test2.json"]
+        match = ["gender"]
+
+        handler = JSONHandler(paths)
+        data = handler.get_data(match)
+
         self.assertEqual(2, len(data.keys()))
         for key in data.keys():
             self.assertEqual(4, len(data[key]))
@@ -47,10 +58,15 @@ class TestMultipleFiles(unittest.TestCase):
             self.assertFalse(data[key] is [])
             self.assertIsInstance(data[key][0], dict)
 
+
 class TestMultipleMatch(unittest.TestCase):
     def test_mulitple_files(self):
-        kwargs = {"path": ["test_data/test.json", "test_data/test2.json"], "match": ["gender", 'id']}
-        data = open_json_read(**kwargs)
+        paths = ["test_data/test.json", "test_data/test2.json"]
+        match = ["gender", "id"]
+
+        handler = JSONHandler(paths)
+        data = handler.get_data(match)
+
         self.assertEqual(4, len(data.keys()))
         for key in data.keys():
             self.assertEqual(2, len(data[key]))
@@ -62,17 +78,25 @@ class TestMultipleMatch(unittest.TestCase):
 class TestInvalidMatch(unittest.TestCase):
 
     def test_invalid_match(self):
-        kwargs = {"path": ["test_data/test.json"], "match": ["not_a_field"]}
+        paths = ["test_data/test.json", "test_data/test2.json"]
+        match = ["not_a_field"]
+
+        handler = JSONHandler(paths)
         try:
-            data = open_json_read(**kwargs)
+            data = handler.get_data(match)
         except KeyError:
             pass
+
 
 class TestCorrctSort(unittest.TestCase):
 
     def test_correct_sort(self):
-        kwargs = {"path": ["test_data/test.json"], "match": ["gender"]}
-        data = open_json_read(**kwargs)
+        paths = ["test_data/test.json"]
+        match = ["gender"]
+
+        handler = JSONHandler(paths)
+
+        data = handler.get_data(match)
         self.assertEqual(2, len(data.keys()))
         for key in data.keys():
             self.assertEqual(2, len(data[key]))
@@ -84,8 +108,12 @@ class TestCorrctSort(unittest.TestCase):
 class TestCorrctSort2(unittest.TestCase):
 
     def test_correct_sort2(self):
-        kwargs = {"path": ["test_data/test2.json"], "match": ["gender"]}
-        data = open_json_read(**kwargs)
+        paths = ["test_data/test2.json"]
+        match = ["gender"]
+
+        handler = JSONHandler(paths)
+        data = handler.get_data(match)
+
         self.assertEqual(2, len(data.keys()))
         for key in data.keys():
             self.assertEqual(2, len(data[key]))

@@ -43,8 +43,8 @@ class TestFileStructure(unittest.TestCase):
         path = "//"
         try:
             organize_data(self.data, path)
-        except PermissionError:
-            pass
+        except OSError as e:
+            self.assertEqual("[Errno 13] Permission denied: '///directory1'", str(e))
 
     def test_no_data(self):
         data = {}
