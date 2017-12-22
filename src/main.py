@@ -3,7 +3,6 @@ import json
 from collections import defaultdict
 import os
 
-from modules.arguments import Arguments
 
 def open_json_read(path, match):
     data = defaultdict(list)
@@ -57,10 +56,61 @@ def make_directory(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+def handle_match(args):
+    print("match")
+
+def handle_explode(args):
+    print("explode")
+
+def handle_collapse(args):
+    print('collapse')
+
+def handle_delete(args):
+    print('delete')
+
+def handle_perc_match(args):
+    print('perc_match')
+
+class Arguments:
+    def __init__(self):
+        self.parser = argparse.ArgumentParser()
+        self.subparsers = self.parser.add_subparsers(help='sub-command help')
+        self.make_parser()
+
+    def get_parser(self):
+        return self.parser
+
+    def make_parser(self):
+        self.add_match()
+        self.add_explode()
+        self.add_collapse()
+        self.add_delete()
+        self.add_perc_match()
+
+    def add_match(self):
+        match_args = self.subparsers.add_parser('match', help='match help')
+        match_args.set_defaults(func=handle_match)
+
+    def add_explode(self):
+        explode_args = self.subparsers.add_parser('explode', help='explode help')
+        explode_args.set_defaults(func=handle_explode)
+
+    def add_collapse(self):
+        collapse_args = self.subparsers.add_parser('collapse', help='collapse help')
+        collapse_args.set_defaults(func=handle_collapse)
+
+    def add_delete(self):
+        delete_args = self.subparsers.add_parser('delete', help='delete help')
+        delete_args.set_defaults(func=handle_delete)
+
+    def add_perc_match(self):
+        perc_match = self.subparsers.add_parser('perc_match', help='percentage match help')
+        perc_match.set_defaults(func=handle_perc_match)
 
 if __name__ == "__main__":
     parser = Arguments().get_parser()
-    parser.parse_args()
+    args = parser.parse_args()
+    args.func(args)
 
     '''    parser = argparse.ArgumentParser()
     parser.add_argument('path', nargs='+', type=str, help='path to filename')
