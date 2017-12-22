@@ -3,6 +3,7 @@ import json
 from collections import defaultdict
 import os
 
+from modules.arguments import Arguments
 
 def open_json_read(path, match):
     data = defaultdict(list)
@@ -58,11 +59,15 @@ def make_directory(path):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = Arguments().get_parser()
+    parser.parse_args()
+
+    '''    parser = argparse.ArgumentParser()
     parser.add_argument('path', nargs='+', type=str, help='path to filename')
     parser.add_argument('match', nargs='+', type=str, help='json fields to match')
-    parser.add_argument('--out', nargs=1, type=str, default="ff_out",
+    parser.add_argument('-o', '--out', nargs=1, type=str, default="ff_out",
                         help="path for head directory for output. defaults to home directory")
     kwargs = vars(parser.parse_args())
     data = open_json_read(**kwargs)
     organize_data(data, **kwargs)
+'''
