@@ -24,8 +24,8 @@ def make_directory(path):
 
 
 def handle_match(args):
-    data = JSONHandler(args.file).get_data(args.match)
-    organize_data(args.output, data)
+    data = JSONHandler(args.file).get_data(args.key)
+    organize_data(data, args.output)
 
 
 def handle_explode(args):
@@ -89,5 +89,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     try:
         args.func(args)
-    except AttributeError:
-        parser.parse_args('--help'.split())
+    except AttributeError as e:
+        if "object has no attribute 'func'" in str(e):
+            parser.parse_args('--help'.split())
+        else:
+            raise e

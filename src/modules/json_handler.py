@@ -22,7 +22,7 @@ class JSONHandler:
     def _open_correct_type(self, file_path, matches):
         try:
             self._open_line_valid_json(file_path, matches)
-        except ValueError:
+        except (ValueError, TypeError):
             self._open_valid_json(file_path, matches)
 
     def _open_valid_json(self, file_path, matches):
