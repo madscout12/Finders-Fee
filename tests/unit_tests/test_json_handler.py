@@ -2,7 +2,8 @@ import sys
 import unittest
 from collections import defaultdict
 
-sys.path.append("../src")
+sys.path.append("../../src")
+path_to_test_data = "../test_data/"
 
 from modules.json_handler import JSONHandler
 
@@ -21,7 +22,7 @@ class TestInvalidFile(unittest.TestCase):
             self.assertEqual("[Errno 2] No such file or directory: 'test.json'", str(e))
 
         try:
-            handler.set_paths(["test_data/false_data.txt"])
+            handler.set_paths([path_to_test_data + "false_data.txt"])
             data = handler.get_data(match)
             self.assertTrue(data == defaultdict(list))
         except ValueError as e:
@@ -33,7 +34,7 @@ class TestInvalidMultipleFile(unittest.TestCase):
     def test_invalid_multiple_file(self):
 
         try:
-            paths = ["test_data/test2.json", "test.json"]
+            paths = [path_to_test_data + "test2.json", "test.json"]
             match = ["gender"]
             handler = JSONHandler(paths)
 
@@ -45,7 +46,7 @@ class TestInvalidMultipleFile(unittest.TestCase):
 
 class TestMultipleFiles(unittest.TestCase):
     def test_mulitple_files(self):
-        paths = ["test_data/test.json", "test_data/test2.json"]
+        paths = [path_to_test_data + "test.json", path_to_test_data + "test2.json"]
         match = ["gender"]
 
         handler = JSONHandler(paths)
@@ -61,7 +62,7 @@ class TestMultipleFiles(unittest.TestCase):
 
 class TestMultipleMatch(unittest.TestCase):
     def test_mulitple_files(self):
-        paths = ["test_data/test.json", "test_data/test2.json"]
+        paths = [path_to_test_data + "test.json", path_to_test_data + "test2.json"]
         match = ["gender", "id"]
 
         handler = JSONHandler(paths)
@@ -78,7 +79,7 @@ class TestMultipleMatch(unittest.TestCase):
 class TestInvalidMatch(unittest.TestCase):
 
     def test_invalid_match(self):
-        paths = ["test_data/test.json", "test_data/test2.json"]
+        paths = [path_to_test_data + "test.json", path_to_test_data + "test2.json"]
         match = ["not_a_field"]
 
         handler = JSONHandler(paths)
@@ -91,7 +92,7 @@ class TestInvalidMatch(unittest.TestCase):
 class TestCorrctSort(unittest.TestCase):
 
     def test_correct_sort(self):
-        paths = ["test_data/test.json"]
+        paths = [path_to_test_data + "test.json"]
         match = ["gender"]
 
         handler = JSONHandler(paths)
@@ -108,7 +109,7 @@ class TestCorrctSort(unittest.TestCase):
 class TestCorrctSort2(unittest.TestCase):
 
     def test_correct_sort2(self):
-        paths = ["test_data/test2.json"]
+        paths = [path_to_test_data + "test2.json"]
         match = ["gender"]
 
         handler = JSONHandler(paths)

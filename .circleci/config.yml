@@ -26,11 +26,19 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
 
-      # run tests!
+      # run unit tests!
       - run:
-          name: run tests
+          name: run unit_tests
           command: |
             . venv/bin/activate
-            cd tests
+            cd tests/unit_tests
+            python3 -m unittest discover
+
+      # run functional tests!
+      - run:
+          name: run func_tests
+          command: |
+            . venv/bin/activate
+            cd tests/func_tests
             python3 -m unittest discover
 

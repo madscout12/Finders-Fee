@@ -2,6 +2,8 @@ import argparse
 import json
 import os
 
+from modules.json_handler import JSONHandler
+
 
 def organize_data(json_data, path):
     for key in json_data.keys():
@@ -22,7 +24,8 @@ def make_directory(path):
 
 
 def handle_match(args):
-    print("match")
+    data = JSONHandler(args.file).get_data(args.match)
+    organize_data(args.output, data)
 
 
 def handle_explode(args):
@@ -59,6 +62,9 @@ class Arguments:
 
     def add_match(self):
         match_args = self.subparsers.add_parser('match', help='match help')
+        match_args.add_argument('-k', "--key", type=str, nargs='*', help="field(s) to match")
+        match_args.add_argument('-f', "--file", type=str, nargs='*', help="paths to input file(s)")
+        match_args.add_argument('-o', "--output", type=str, nargs='?', help="path to place output tree", default='.')
         match_args.set_defaults(func=handle_match)
 
     def add_explode(self):
@@ -85,4 +91,3 @@ if __name__ == "__main__":
         args.func(args)
     except AttributeError:
         parser.parse_args('--help'.split())
-
