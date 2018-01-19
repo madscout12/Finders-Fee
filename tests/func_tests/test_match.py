@@ -4,21 +4,20 @@ import os
 import shutil
 import subprocess
 
-os.chdir("../..")
-sys.path.insert(0, "src")
+sys.path.insert(0, "../../src")
 
 from modules.json_handler import JSONHandler
 
-tests = [{"script":"python3 src/main.py match -k first_name -f tests/test_data/match_data.json -o match_test",\
+tests = [{"script":"python3 ../../src/main.py match -k first_name -f ../test_data/match_data.json -o match_test",\
                     "expected_matches":["Jeanette", "Giavani", "Noell", "Willard"],\
                     "match_name":['first_name']},\
-        {"script":"python3 src/main.py match -k first_name -f tests/test_data/match_data.json tests/test_data/unit_test2.json -o match_test",\
+        {"script":"python3 ../../src/main.py match -k first_name -f ../test_data/match_data.json ../test_data/unit_test2.json -o match_test",\
                     "expected_matches":["Jeanette", "Giavani", "Noell", "Willard"],\
                     "match_name":['first_name']},\
-        {"script":"python3 src/main.py match -k first_name last_name -f tests/test_data/match_data.json -o match_test",\
+        {"script":"python3 ../../src/main.py match -k first_name last_name -f ../test_data/match_data.json -o match_test",\
                     "expected_matches":["Jeanette:Penddreth", "Giavani:Frediani", "Noell:Bea", "Willard:Valek"],\
                     "match_name":['first_name','last_name']},\
-        {"script":"python3 src/main.py match -k first_name id -f tests/test_data/match_data.json -o match_test",\
+        {"script":"python3 ../../src/main.py match -k first_name id -f ../test_data/match_data.json -o match_test",\
                     "expected_matches":["Jeanette:1", "Jeanette:5", "Giavani:2", "Noell:3", "Willard:4"],\
                     "match_name":['first_name','last_name']}\
                  ]

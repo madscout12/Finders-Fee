@@ -3,9 +3,8 @@ import os
 import subprocess
 import json
 
-os.chdir("../..")
 
-tests = [{"script":"python3 src/main.py delete -k first_name -f tests/test_data/delete_data.json",\
+tests = [{"script":"python3 ../../src/main.py delete -k first_name -f ../test_data/delete_data.json",\
                     "deleted":['first_name'],\
                     "out_file":['out.json']}#,\
 #        {"script":"python3 src/main.py delete -k address['number'] -f tests/test_data/delete_data.json",\
