@@ -12,6 +12,10 @@ class JSONHandler:
         self._process_data(matches)
         return self.data
 
+    def delete_data(self, matches):
+        for path in self.paths:
+            self._open_delete(path,matches)
+
     def set_paths(self, paths):
         self.paths = paths
 
@@ -41,3 +45,27 @@ class JSONHandler:
                 for key in matches:
                     keys.append(str(json_data[key]))
                 self.data[':'.join(keys)].append(json_data)
+
+    def _open_delete(self, path, matches):
+        try:
+            self._open_delete_line_valid_json(path, matches)
+        except (ValueError, TypeError):
+            self._open_delete_valid_json(path, matches)
+
+    def _open_delete_valid_json(self, file_path, matches):
+        with open(file_path) as file:
+            for json_data in json.load(file)
+                for line in json_data:
+                    for key in matches:
+                        line.pop(key)
+
+                self.data.append(json_data)
+
+    def _open_delete_line_valid_json(self, file_path, matches):
+        with open(file_path) as file:
+            for line in file.readlines():
+                json_data = json.loads(line)
+                for key in matches:
+                    json_data.pop(key)
+                self.data.append(json_data)
+

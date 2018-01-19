@@ -37,7 +37,9 @@ def handle_collapse(args):
 
 
 def handle_delete(args):
-    print('delete')
+    data = JSONHandler(args.file).get_data(args.key)
+
+    write_json(data, args.output)
 
 
 def handle_perc_match(args):
@@ -77,6 +79,10 @@ class Arguments:
 
     def add_delete(self):
         delete_args = self.subparsers.add_parser('delete', help='delete help')
+        delete_args.add_argument('-k', "--key", type=str, nargs='*', help="field(s) to delete")
+        delete_args.add_argument('-f', "--file", type=str, nargs='*', help="paths to input file(s)")
+        delete_args.add_argument('-o', "--output", type=str, nargs='?', help="path to place output file",
+                                 default='out.json')
         delete_args.set_defaults(func=handle_delete)
 
     def add_perc_match(self):
