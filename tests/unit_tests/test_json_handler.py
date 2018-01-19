@@ -26,6 +26,7 @@ class TestInvalidFile(unittest.TestCase):
             data = handler.get_data(match)
             self.assertTrue(data == defaultdict(list))
         except (ValueError, AssertionError) as e:
+            print(str(e))
             self.assertTrue("No JSON object could be decoded" in str(e))
 
 
