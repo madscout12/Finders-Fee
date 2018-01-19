@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "first_name": "Jeanette",
+    "last_name": "Penddreth",
+    "address": {
+      "number": 22,
+      "street": "locust",
+      "zip": 55453
+    }
+  },
+  {
+    "id": 1,
+    "first_name": "Tom",
+    "last_name": "Smith",
+    "address": {
+      "number": 21,
+      "street": "something",
+      "zip": 55953
+    }
+  }
+]

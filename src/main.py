@@ -37,9 +37,8 @@ def handle_collapse(args):
 
 
 def handle_delete(args):
-    data = JSONHandler(args.file).get_data(args.key)
-
-    write_json(data, args.output)
+    data = JSONHandler(args.file).delete_data(args.key)
+    write_json(args.output, data["del"])
 
 
 def handle_perc_match(args):
