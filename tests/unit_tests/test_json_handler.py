@@ -27,10 +27,8 @@ class TestInvalidFile(unittest.TestCase):
             data = handler.get_data(match)
             self.assertTrue(data == defaultdict(list))
         except ValueError as e:
-            self.assertTrue("No JSON object could be decoded" in str(e), msg=str(e))
-        except json.decode.JSONDecodeError as e:
-            self.assertTrue("Expecting value:" in str(e), msg=str(e))
-
+            self.assertTrue("No JSON object could be decoded" in str(e) \
+                            or "Expecting value:" in str(e), msg=str(e))
 
 class TestInvalidMultipleFile(unittest.TestCase):
 
